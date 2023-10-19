@@ -1,102 +1,66 @@
-public class Produto {
-    private int id;
-    private String nome;
-    private double preco;
-
-    public Produto(int id, String nome, double preco) {
-        this.id = id;
-        this.nome = nome;
-        this.preco = preco;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public double getPreco() {
-        return preco;
-    }
-}
-
-public class ItensCarrinho {
-    private Produto produto;
-    private int quantidade;
-
-    public ItensCarrinho(Produto produto, int quantidade) {
-        this.produto = produto;
-        this.quantidade = quantidade;
-    }
-
-    public Produto getProduto() {
-        return produto;
-    }
-
-    public int getQuantidade() {
-        return quantidade;
-    }
-}
-
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Carrinho {
-    private ArrayList<ItensCarrinho> itens;
-    private double valorTotal;
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<Produto> listaProdutos = new ArrayList<>();
+        Carrinho carrinho = new Carrinho();
+        Scanner scanner = new Scanner(System.in);
 
-    public Carrinho() {
-        itens = new ArrayList<ItensCarrinho>();
-        valorTotal = 0.0;
-    }
+        while (true) {
+            System.out.println("Escolha uma opção:");
+            System.out.println("1 - Incluir produto");
+            System.out.println("2 - Adicionar produto ao carrinho");
+            System.out.println("3 - Listar carrinho");
+            System.out.println("4 - Sair");
+            int opcao = scanner.nextInt();
+            scanner.nextLine();  // Limpar a quebra de linha
 
-    public void adicionarItem(Produto produto, int quantidade) {
-        ItensCarrinho item = new ItensCarrinho(produto, quantidade);
-        itens.add(item);
-        valorTotal += (produto.getPreco() * quantidade);
-    }
+            switch (opcao) {
+                case 1:
+                    System.out.println("Digite o ID do produto:");
+                    int idProduto = scanner.nextInt();
+                    scanner.nextLine();
+                    System.out.println("Digite o nome do produto:");
+                    String nomeProduto = scanner.nextLine();
+                    System.out.println("Digite o preço do produto:");
+                    double precoProduto = scanner.nextDouble();
+                    Produto novoProduto = new Produto(idProduto, nomeProduto, precoProduto);
+                    listaProdutos.add(novoProduto);
+                    break;
 
-    public void listarItens() {
-        for (ItensCarrinho item : itens) {
-            System.out.println("ID: " + item.getProduto().getId());
-            System.out.println("Nome: " + item.getProduto().getNome());
-            System.out.println("Preço: " + item.getProduto().getPreco());
-            System.out.println("Quantidade: " + item.getQuantidade());
-            System.out.println();
-        }
-    }
+                case 2:
+                    System.out.println("Lista de produtos disponíveis:");
+                    for (Produto produto : listaProdutos) {
+                        System.out.println("ID: " + produto.getId() + ", Nome: " + produto.getNome() + ", Preço: " + produto.getPreco());
+                    }
 
-    public void excluirItem(int id) {
-        for (int i = 0; i < itens.size(); i++) {
-            if (itens.get(i).getProduto().getId() == id) {
-                valorTotal -= (itens.get(i).getProduto().getPreco() * itens.get(i).getQuantidade());
-                itens.remove(i);
-                break;
+                    System.out.println("Digite o ID do produto que deseja adicionar ao carrinho:");
+                    int idProdutoCarrinho = scanner.nextInt();
+                    System.out.println("Digite a quantidade desejada:");
+                    int quantidade = scanner.nextInt();
+                    for (Produto produto : listaProdutos) {
+                        if (produto.getId() == idProdutoCarrinho) {
+                            carrinho.adicionarItem(produto, quantidade);
+                            break;
+                        }
+                    }
+                    break;
+
+                case 3:
+                    System.out.println("Itens no carrinho:");
+                    carrinho.listarCarrinho();
+                    break;
+
+                case 4:
+                    System.out.println("Saindo da aplicação.");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+
+                default:
+                    System.out.println("Opção inválida. Tente novamente.");
             }
         }
     }
-
-    public void alterarQuantidade(int id, int quantidade) {
-        for (int i = 0; i < itens.size(); i++) {
-            if (itens.get(i).getProduto().getId() == id) {
-                valorTotal -= (itens.get(i).getProduto().getPreco() * itens.get(i).getQuantidade());
-                itens.get(i).setQuantidade(quantidade);
-                valorTotal += (itens.get(i).getProduto().getPreco() * itens.get(i).getQuantidade());
-                break;
-            }
-        }
-    }
-
-    public void listarCarrinho() {
-        for (ItensCarrinho item : itens) {
-            System.out.println("ID: " + item.getProduto().getId());
-            System.out.println("Nome: " + item.getProduto().getNome());
-            System.out.println("Preço: " + item.getProduto().getPreco());
-            System.out.println("Quantidade: " + item.getQuantidade());
-            System.out.println();
-        }
-        System.out.println("Valor Total: " + valorTotal);
-    }
-                               }
+}
